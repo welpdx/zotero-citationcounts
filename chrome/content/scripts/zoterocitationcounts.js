@@ -56,6 +56,7 @@ function setCitationCount(item, tag, count) {
     extras.unshift("" + count + " citations (" + tag + ") [" + date + "]");
     extra = extras.join("\n");
     item.setField('extra', extra);
+    item.setField('callNumber', count);
 }
 
 async function getCrossrefCount(item) {
@@ -297,7 +298,7 @@ Zotero.CitationCounts.resetState = function(operation) {
         error_multiple_shown = false;
         final_count_shown = false;
         return;
-    } 
+    }
 
     if (error_invalid || error_nocitationcounts || error_multiple) {
         Zotero.CitationCounts.progressWindow.close();
@@ -325,8 +326,8 @@ Zotero.CitationCounts.resetState = function(operation) {
             }
             progressWindowNocitationcounts.progress.setError();
             progressWindowNocitationcounts.show();
-            progressWindowNocitationcounts.startCloseTimer(8000);  
-            error_nocitationcounts_shown = true; 
+            progressWindowNocitationcounts.startCloseTimer(8000);
+            error_nocitationcounts_shown = true;
         }
         if (error_multiple && !error_multiple_shown) {
             var progressWindowMulti = new Zotero.ProgressWindow({closeOnClick:true});
@@ -338,8 +339,8 @@ Zotero.CitationCounts.resetState = function(operation) {
             }
             progressWindow.progress.setError();
             progressWindowMulti.show();
-            progressWindowMulti.startCloseTimer(8000); 
-            error_multiple_shown = true; 
+            progressWindowMulti.startCloseTimer(8000);
+            error_multiple_shown = true;
         }
         return;
     }
