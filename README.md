@@ -2,6 +2,8 @@
 
 * This is a fork from [eschnett](https://github.com/eschnett/). See [his code here](https://github.com/eschnett/zotero-citationcounts).
 
+I am a noob at github, so idk if this is proper etiquette. But Imma just make releases for personal use. All code here is by [eschnett](https://github.com/eschnett/). He even has instructions on how to make new builds. So all credit to him. Please don't @ me. 
+
 This is an add-on for [Zotero](https://www.zotero.org), a research source management tool. The add-on can auto-fetch citation counts for journal articles using various APIs, including [Crossref](https://www.crossref.org), [Inspire
 HEP](https://inspirehep.net),<!-- [NASA/ADS](https://ui.adsabs.harvard.edu), --> and [Semantic Scholar](https://www.semanticscholar.org).
 [Google Scholar](https://scholar.google.com) is not supported because automated access is against its terms of service. But I want to see if I can do it.
