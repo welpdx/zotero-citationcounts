@@ -2,7 +2,7 @@
 
 * This is a fork from [eschnett](https://github.com/eschnett/). See [his code here](https://github.com/eschnett/zotero-citationcounts).
 
-I am a noob at github, so idk if this is proper etiquette. But Imma just make releases for personal use. All code here is by [eschnett](https://github.com/eschnett/). He even has instructions on how to make new builds. So all credit to him. Please don't @ me. 
+I am a noob at github, so idk if this is proper etiquette. But Imma just make releases for personal use. All code here is by [eschnett](https://github.com/eschnett/). He even has instructions on how to make new builds. So all credit to him. Please don't @ me.
 
 This is an add-on for [Zotero](https://www.zotero.org), a research source management tool. The add-on can auto-fetch citation counts for journal articles using various APIs, including [Crossref](https://www.crossref.org), [Inspire
 HEP](https://inspirehep.net),<!-- [NASA/ADS](https://ui.adsabs.harvard.edu), --> and [Semantic Scholar](https://www.semanticscholar.org).
@@ -23,7 +23,7 @@ Code for this extension is based on the [Zotero DOI Manager](https://github.com/
 - Run Zotero (version 5.x)
 - Go to `Tools -> Add-ons`
 - `Install Add-on From File`
-- Choose the file `zotero-citationcounts-1.2.0.xpi`
+- Choose the file `zotero-citationcounts-1.2.2.xpi`
 - Restart Zotero
 
 ## License
