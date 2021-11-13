@@ -16,7 +16,7 @@
       <preference id="pref-citationcounts-tag-multiple" name="extensions.citationcounts.tag_multiple" type="string"/>
       <preference id="pref-citationcounts-tag-nocitationcounts" name="extensions.citationcounts.tag_nocitationcounts" type="string"/>
     </preferences>
-      
+
     <groupbox>
       <caption label="&autoretrieve-label;"/>
       <radiogroup id="id-citationcounts-autoretrieve" preference="pref-citationcounts-autoretrieve">
@@ -24,6 +24,7 @@
         <radio label="&autoretrieve-inspire-label;" value='inspire'/>
         <radio label="&autoretrieve-ads-label;" value='ads'/>
         <radio label="&autoretrieve-semanticscholar-label;" value='semanticscholar'/>
+				<radio label="&autoretrieve-googlescholar-label;" value='googlescholar'/>
         <radio label="&autoretrieve-no-label;" value='none'/>
       </radiogroup>
     </groupbox>

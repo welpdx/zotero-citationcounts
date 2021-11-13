@@ -5,6 +5,7 @@
 <!ENTITY autoretrieve-inspire-label "Inspire HEP citation counts">
 <!ENTITY autoretrieve-ads-label "NASA/ADS citation counts">
 <!ENTITY autoretrieve-semanticscholar-label "Semantic Scholar citation counts">
+<!ENTITY autoretrieve-googlescholar-label "Google Scholar citation counts">
 <!ENTITY autoretrieve-no-label "No">
 <!ENTITY notfound-tag-label "Citation Counts Not Found Tags">
 <!ENTITY notfound-tag-desc "Tags added to items to indicate reasons why unique citation counts are not found">

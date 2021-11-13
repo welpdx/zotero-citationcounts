@@ -35,10 +35,14 @@
                     id="zotero-itemmenu-citationcounts-semanticscholar"
                     label="&citationcounts-menu-semanticscholar-label;"
                     oncommand="Zotero.CitationCounts.updateSelectedItems('semanticscholar')"/>
+                <menuitem
+                    id="zotero-itemmenu-citationcounts-googlescholar"
+                    label="&citationcounts-menu-googlescholar-label;"
+                    oncommand="Zotero.CitationCounts.updateSelectedItems('googlescholar')"/>
             </menupopup>
         </menu>
     </popup>
-    
+
     <menupopup id="menu_ToolsPopup">
       <menuitem id="menu_Tools-citationcounts-preferences" label="&citationcounts-preferences-label;" oncommand="Zotero.CitationCounts.openPreferenceWindow();"/>
       <menu id="menu_Tools-citationcounts-menu" label="&citationcounts-autoretrieve-label;">
@@ -63,6 +67,11 @@
               type="checkbox"
               label="&citationcounts-autoretrieve-semanticscholar-label;"
               oncommand="Zotero.CitationCounts.changePref('semanticscholar');"/>
+          <menuitem
+              id="menu_Tools-citationcounts-menu-popup-googlescholar"
+              type="checkbox"
+              label="&citationcounts-autoretrieve-googlescholar-label;"
+              oncommand="Zotero.CitationCounts.changePref('googlescholar');"/>
           <menuitem
               id="menu_Tools-citationcounts-menu-popup-none"
               type="checkbox"
