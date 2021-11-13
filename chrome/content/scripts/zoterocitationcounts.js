@@ -69,15 +69,19 @@ zsc.getCiteCount = function(responseText) {
 // Definitions
 
 const operations = [
-    "crossref", "inspire", "ads", "semanticscholar", "googlescholar"
+    "crossref", "inspire", "ads", "semanticscholar", "googlescholar", "setcrossref", "setinspire", "setads", "setsemanticscholar"
 ];
 
 const operationNames = {
     "crossref": "Crossref",
     "inspire": "Inspire HEP",
-    "ads": "NASA/ADS",
+    //"ads": "NASA/ADS",
     "semanticscholar": "Semantic Scholar",
   	"googlescholar": "Google Scholar",
+    "setcrossref": "Crossref",
+    "setinspire": "Inspire HEP",
+    //"setads": "NASA/ADS",
+    "setsemanticscholar": "Semantic Scholar",
     "setgooglescholar" : "Google Scholar"
 };
 
@@ -102,8 +106,7 @@ const operationNames = {
 
 
 function setCitationCountSwitch(item, tag) {
-  //if (isDebug()) Zotero.debug("[scholar-citations] item: "
-    + item);
+  //if (isDebug()) Zotero.debug("[scholar-citations] item: "+ item);
 
 	let extra = item.getField('extra');
   //if (isDebug()) Zotero.debug("[scholar-citations] extra: "  + extra);
@@ -609,6 +612,46 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
         }
         Zotero.CitationCounts.updateNextItem(operation);
 
+    } else if (operation == "setcrossref" ) {
+
+          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setcrossref'  ");
+          count = setCitationCountSwitch(item, 'Crossref');
+
+          //await item.save();
+          if (count){
+            await item.saveTx();
+          }
+          Zotero.CitationCounts.counter++;
+          Zotero.CitationCounts.updateNextItem(operation);
+
+    } else if (operation == "setinspire" ) {
+
+          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setinspire'  ");
+          count = setCitationCountSwitch(item, 'Inspire/DOI');
+          if (!count){
+            count = setCitationCountSwitch(item, 'Inspire/arXiv');
+          }
+          //await item.save();
+          if (count){
+            await item.saveTx();
+          }
+          Zotero.CitationCounts.counter++;
+          Zotero.CitationCounts.updateNextItem(operation);
+
+    } else if (operation == "setsemanticscholar" ) {
+
+          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setsemanticscholar'  ");
+          count = setCitationCountSwitch(item, 'Semantic Scholar/DOI');
+          if (!count){
+            count = setCitationCountSwitch(item, 'Semantic Scholar/arXiv');
+          }
+          //await item.save();
+          if (count){
+            await item.saveTx();
+          }
+          Zotero.CitationCounts.counter++;
+          Zotero.CitationCounts.updateNextItem(operation);
+
     } else if (operation == "setgooglescholar" ) {
 
           if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setgooglescholar'  ");
@@ -618,7 +661,6 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
           if (count){
             await item.saveTx();
           }
-
           Zotero.CitationCounts.counter++;
           Zotero.CitationCounts.updateNextItem(operation);
 

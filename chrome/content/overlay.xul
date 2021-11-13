@@ -27,10 +27,12 @@
                     id="zotero-itemmenu-citationcounts-inspire"
                     label="&citationcounts-menu-inspire-label;"
                     oncommand="Zotero.CitationCounts.updateSelectedItems('inspire')"/>
+                    <!--
                 <menuitem
                     id="zotero-itemmenu-citationcounts-ads"
                     label="&citationcounts-menu-ads-label;"
                     oncommand="Zotero.CitationCounts.updateSelectedItems('ads')"/>
+                    -->
                 <menuitem
                     id="zotero-itemmenu-citationcounts-semanticscholar"
                     label="&citationcounts-menu-semanticscholar-label;"
@@ -39,6 +41,22 @@
                     id="zotero-itemmenu-citationcounts-googlescholar"
                     label="&citationcounts-menu-googlescholar-label;"
                     oncommand="Zotero.CitationCounts.updateSelectedItems('googlescholar')"/>
+            </menupopup>
+        </menu>
+        <menu class="menu-iconic" image="chrome://zoterocitationcounts/skin/doi@2x.png" id="zotero-itemmenu-citationcounts-menu2" label="&citationcounts-menu-label2;">
+            <menupopup id="zotero-itemmenu-citationcounts-menupopup2">
+                <menuitem
+                    id="zotero-itemmenu-citationcounts-setcrossref"
+                    label="&citationcounts-menu-setcrossref-label;"
+                    oncommand="Zotero.CitationCounts.updateSelectedItems('setcrossref')"/>
+                <menuitem
+                    id="zotero-itemmenu-citationcounts-setinspire"
+                    label="&citationcounts-menu-setinspire-label;"
+                    oncommand="Zotero.CitationCounts.updateSelectedItems('setinspire')"/>
+                <menuitem
+                    id="zotero-itemmenu-citationcounts-setsemanticscholar"
+                    label="&citationcounts-menu-setsemanticscholar-label;"
+                    oncommand="Zotero.CitationCounts.updateSelectedItems('setsemanticscholar')"/>
                 <menuitem
                     id="zotero-itemmenu-citationcounts-setgooglescholar"
                     label="&citationcounts-menu-setgooglescholar-label;"

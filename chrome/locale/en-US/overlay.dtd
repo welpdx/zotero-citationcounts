@@ -17,10 +17,17 @@
 <!ENTITY citationcounts-autoretrieve-no-label "No">
 
 <!-- right Click  -->
-<!ENTITY citationcounts-menu-label "Find Citation Counts">
+<!ENTITY citationcounts-menu-label "Update Citation Counts">
 <!ENTITY citationcounts-menu-crossref-label "Crossref citation count">
 <!ENTITY citationcounts-menu-inspire-label "Inspire HEP citation count">
 <!ENTITY citationcounts-menu-ads-label "NASA/ADS citation count">
 <!ENTITY citationcounts-menu-semanticscholar-label "Semantic Scholar citation count">
 <!ENTITY citationcounts-menu-googlescholar-label "Google Scholar citation count">
-<!ENTITY citationcounts-menu-setgooglescholar-label "set Google Scholar in callNumber">
+
+<!-- letter and numbers in front of options so hotkeys would work -->
+<!ENTITY citationcounts-menu-label2 "Q Switch Citation Counts">
+<!ENTITY citationcounts-menu-setcrossref-label "1. Set Crossref citation count">
+<!ENTITY citationcounts-menu-setinspire-label "2. Set Inspire HEP citation count">
+<!ENTITY citationcounts-menu-setads-label "3. Set NASA/ADS citation count">
+<!ENTITY citationcounts-menu-setsemanticscholar-label "4. Set Semantic Scholar citation count">
+<!ENTITY citationcounts-menu-setgooglescholar-label "5. Set Google Scholar citation count">
