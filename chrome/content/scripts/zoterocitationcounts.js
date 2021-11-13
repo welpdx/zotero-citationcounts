@@ -102,10 +102,11 @@ const operationNames = {
 
 
 function setCitationCountSwitch(item, tag) {
-  if (isDebug()) Zotero.debug("[scholar-citations] item: "
+  //if (isDebug()) Zotero.debug("[scholar-citations] item: "
     + item);
 
 	let extra = item.getField('extra');
+  //if (isDebug()) Zotero.debug("[scholar-citations] extra: "  + extra);
 
   if (!extra) {
       extra = "";
@@ -119,8 +120,12 @@ function setCitationCountSwitch(item, tag) {
   line = extras.filter(ex => patt2.test(ex));
   countpatt = new RegExp("^\\d+");
   count = String(line).match(countpatt);
+  //if (isDebug()) Zotero.debug("[scholar-citations] rest: "  + rest);
 
+  rest = String(rest).split(",").join("\n");
+  //if (isDebug()) Zotero.debug("[scholar-citations] rest2: "  + rest);
   extra = line + "\n" + rest;
+
   item.setField('extra', extra);
   count = parseInt(count)
   item.setField('callNumber', count);
