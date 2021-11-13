@@ -5,14 +5,14 @@
     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <RDF:Description
         RDF:about="urn:mozilla:install-manifest"
-        em:id="schnetter@gmail.com"
+        em:id="welpdx@gmail.com"
         em:name="Zotero Citation Counts Manager"
-        em:version="1.2.0"
+        em:version="1.2.1"
         em:type="2"
-        em:creator="Erik Schnetter"
+        em:creator="Erik Schnetter, Welpdx"
         em:description="Automatically fetch and update citation counts"
-        em:homepageURL="https://github.com/eschnett/zotero-citationcounts"
-        em:updateURL="https://raw.githubusercontent.com/eschnett/zotero-citationcounts/master/update.rdf">
+        em:homepageURL="https://github.com/welpdx/zotero-citationcounts"
+        em:updateURL="https://raw.githubusercontent.com/welpdx/zotero-citationcounts/master/update.rdf">
         <em:type>2</em:type>
         <em:targetApplication>
             <Description>
