@@ -6,6 +6,7 @@
 <!ENTITY zotero.zoterocitationcounts.menu.label "Manage Citation Counts">
 <!ENTITY zotero.zoterocitationcounts.toolsmenu.label "Get citation counts for new items">
 
+<!--  Menu tools  -->
 <!ENTITY citationcounts-preferences-label "Citation Counts Manager Preferences…">
 <!ENTITY citationcounts-autoretrieve-label "Get citation counts for new items">
 <!ENTITY citationcounts-autoretrieve-crossref-label "Crossref">
@@ -14,9 +15,12 @@
 <!ENTITY citationcounts-autoretrieve-semanticscholar-label "Semantic Scholar">
 <!ENTITY citationcounts-autoretrieve-googlescholar-label "Google Scholar">
 <!ENTITY citationcounts-autoretrieve-no-label "No">
-<!ENTITY citationcounts-menu-label "Manage Citation Counts">
-<!ENTITY citationcounts-menu-crossref-label "Get Crossref citation count">
-<!ENTITY citationcounts-menu-inspire-label "Get Inspire HEP citation count">
-<!ENTITY citationcounts-menu-ads-label "Get NASA/ADS citation count">
-<!ENTITY citationcounts-menu-semanticscholar-label "Get Semantic Scholar citation count">
-<!ENTITY citationcounts-menu-googlescholar-label "Get Google Scholar citation count">
+
+<!-- right Click  -->
+<!ENTITY citationcounts-menu-label "Find Citation Counts">
+<!ENTITY citationcounts-menu-crossref-label "Crossref citation count">
+<!ENTITY citationcounts-menu-inspire-label "Inspire HEP citation count">
+<!ENTITY citationcounts-menu-ads-label "NASA/ADS citation count">
+<!ENTITY citationcounts-menu-semanticscholar-label "Semantic Scholar citation count">
+<!ENTITY citationcounts-menu-googlescholar-label "Google Scholar citation count">
+<!ENTITY citationcounts-menu-setgooglescholar-label "set Google Scholar in callNumber">

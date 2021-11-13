@@ -4,7 +4,7 @@ if (typeof Zotero === 'undefined') {
 }
 Zotero.CitationCounts = {};
 
-// Stuff for Google Scholar. Collated from 
+// Stuff for Google Scholar. Collated from
 //https://github.com/smlum/zotero-scholar-citations/blob/develop/chrome/content/zsc.js
 let isDebug = function() {
     return typeof Zotero != 'undefined'
@@ -77,30 +77,62 @@ const operationNames = {
     "inspire": "Inspire HEP",
     "ads": "NASA/ADS",
     "semanticscholar": "Semantic Scholar",
-	"googlescholar": "Google Scholar"
+  	"googlescholar": "Google Scholar",
+    "setgooglescholar" : "Google Scholar"
 };
 
-// function getCitationCount(item, tag) {
-//     let extra = item.getField('extra');
-//     if (!extra) {
-//         return -1;
-//     }
-//     let extras = extra.split("\n");
-//     const patt = new RegExp("^Citations \\(" + tag + "\\): (\\d+).*", "i");
-//     extras = extras.filter(ex => patt.test(ex));
-//     if (length(extras) == 0) {
-//         return -1;
-//     }
-//     let count = patt.exec(extras[1])[1]
-//     if (!count) {
-//         return -1;
-//     }
-//     count = parseInt(count);
-//     return count;
-// }
+/* function getCitationCount(item, tag) {
+    let extra = item.getField('extra');
+    if (!extra) {
+        return -1;
+    }
+    let extras = extra.split("\n");
+    const patt = new RegExp("^Citations \\(" + tag + "\\): (\\d+).*", "i");
+    extras = extras.filter(ex => patt.test(ex));
+    if (length(extras) == 0) {
+        return -1;
+    }
+    let count = patt.exec(extras[1])[1]
+    if (!count) {
+        return -1;
+    }
+    count = parseInt(count);
+    return count;
+} */
+
+
+function setCitationCountSwitch(item, tag) {
+  if (isDebug()) Zotero.debug("[scholar-citations] item: "
+    + item);
+
+	let extra = item.getField('extra');
+
+  if (!extra) {
+      extra = "";
+      return -1;
+  }
+  let extras = extra.split("\n");
+  // just dont have the old format (sorry no cross compatibility at the moment)
+  const patt2 = new RegExp("^\\d+ citations \\(" + tag + "\\)", "i");
+
+  rest = extras.filter(ex => !patt2.test(ex));
+  line = extras.filter(ex => patt2.test(ex));
+  countpatt = new RegExp("^\\d+");
+  count = String(line).match(countpatt);
+
+  extra = line + "\n" + rest;
+  item.setField('extra', extra);
+  count = parseInt(count)
+  item.setField('callNumber', count);
+
+  //if (isDebug()) Zotero.debug("[scholar-citations] count: " + count);
+  return count;
+}
+
+
 
 function setCitationCount(item, tag, count) {
-    
+
 	let extra = item.getField('extra');
     if (!extra) {
         extra = "";
@@ -268,14 +300,14 @@ async function getSemanticScholarCount(item, idtype) {
 }
 
 
-//Google Scholar 
+//Google Scholar
 async function getGoogleScholar(item) {
 
 	const url = zsc.generateItemUrl(item);
 	if (isDebug()) Zotero.debug("[scholar-citations]: URL = "	+ url);
-	
+
 	let count = null;
-	
+
     const response = await fetch(url)
           .then(response => response.text())
           .catch(err => null);
@@ -286,9 +318,9 @@ async function getGoogleScholar(item) {
 			+ "Something went wrong");
         return -1;
 	}
-		
+
 	try {
-        // google Scholar returns 
+        // google Scholar returns
         count = zsc.getCiteCount(response);
 		if (isDebug()) Zotero.debug("[scholar-citations] "
 			+ "recieved non-captcha scholar results");
@@ -349,8 +381,8 @@ Zotero.CitationCounts.setCheck = function() {
         "menu_Tools-citationcounts-menu-popup-ads");
     let tools_semanticscholar = document.getElementById(
         "menu_Tools-citationcounts-menu-popup-semanticscholar");
-	let tools_googlescholar = document.getElementById(
-		"menu_Tools-citationcounts-menu-popup-googlescholar");
+  	let tools_googlescholar = document.getElementById(
+  		"menu_Tools-citationcounts-menu-popup-googlescholar");
     let tools_none = document.getElementById(
         "menu_Tools-citationcounts-menu-popup-none");
     const pref = getPref("autoretrieve");
@@ -566,14 +598,27 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
     } else if (operation == "googlescholar") {
         const counts = await getGoogleScholar(item);
         if (counts >= 0 ) {
-			setCitationCount(item, 'Google Scholar', counts);
-            item.saveTx();
-            Zotero.CitationCounts.counter++;
+          setCitationCount(item, 'Google Scholar', counts);
+          item.saveTx();
+          Zotero.CitationCounts.counter++;
         }
         Zotero.CitationCounts.updateNextItem(operation);
 
+    } else if (operation == "setgooglescholar" ) {
+
+          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setgooglescholar'  ");
+          count = setCitationCountSwitch(item, 'Google Scholar');
+
+          //await item.save();
+          if (count){
+            await item.saveTx();
+          }
+
+          Zotero.CitationCounts.counter++;
+          Zotero.CitationCounts.updateNextItem(operation);
+
     } else {
-        Zotero.CitationCounts.updateNextItem(operation);
+          Zotero.CitationCounts.updateNextItem(operation);
     }
 };
 

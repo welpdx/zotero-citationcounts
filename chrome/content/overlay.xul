@@ -39,6 +39,10 @@
                     id="zotero-itemmenu-citationcounts-googlescholar"
                     label="&citationcounts-menu-googlescholar-label;"
                     oncommand="Zotero.CitationCounts.updateSelectedItems('googlescholar')"/>
+                <menuitem
+                    id="zotero-itemmenu-citationcounts-setgooglescholar"
+                    label="&citationcounts-menu-setgooglescholar-label;"
+                    oncommand="Zotero.CitationCounts.updateSelectedItems('setgooglescholar')"/>
             </menupopup>
         </menu>
     </popup>
