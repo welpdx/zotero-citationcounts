@@ -2,6 +2,15 @@
 
 * This is a fork from [eschnett](https://github.com/eschnett/). See [his code here](https://github.com/eschnett/zotero-citationcounts).
 
+## Changelogs
+#### 1.2.1
+ - Replaces the callNumber field with times cited count
+#### 1.2.2
+ - Added Google Scholar as an option. Get's Google Scholar "Cited By" numbers and adds it in "Extra" and "callNumber" fields
+#### 1.2.3
+ - Adds Extra Context Menu when RightClicking to switch citation count, if data exists.  
+ - [demo gif](https://i.imgur.com/JC90JxQ.gif)
+
 ### Credits
 I am a noob at github, so idk if this is proper etiquette. But Imma just make releases for personal use. Most of the code here is by [eschnett](https://github.com/eschnett/) and some in Zotero Scholar Citations from [smlum's](https://github.com/smlum/zotero-scholar-citations) (2021 Feb), [MaxKuehn's](https://github.com/MaxKuehn/zotero-scholar-citations/) (2019), and [beloglazov's](https://github.com/beloglazov/zotero-scholar-citations) (2017) versions.
 ### About Add-on
