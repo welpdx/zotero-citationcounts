@@ -1,18 +1,16 @@
-# Zotero Citation Counts Manager
-
-* This is a fork from [eschnett](https://github.com/eschnett/). See [his code here](https://github.com/eschnett/zotero-citationcounts).
+# Zotero Citation Counts Manager (Frankenstein Edition)
 
 ## Changelogs
-#### 1.2.1
- - Replaces the callNumber field with times cited count
-#### 1.2.2
- - Added Google Scholar as an option. Get's Google Scholar "Cited By" numbers and adds it in "Extra" and "callNumber" fields
+#### 1.2.1  Replaces the callNumber field with times cited count
+#### 1.2.2  Added Google Scholar as an option. Get's Google Scholar "Cited By" numbers and adds it in "Extra" and "callNumber" fields
 #### 1.2.3
  - Adds Extra Context Menu when RightClicking to switch citation count, if data exists.  
  - [demo gif](https://i.imgur.com/JC90JxQ.gif)
 
 ### Credits
-I am a noob at github, so idk if this is proper etiquette. But Imma just make releases for personal use. Most of the code here is by [eschnett](https://github.com/eschnett/) and some in Zotero Scholar Citations from [smlum's](https://github.com/smlum/zotero-scholar-citations) (2021 Feb), [MaxKuehn's](https://github.com/MaxKuehn/zotero-scholar-citations/) (2019), and [beloglazov's](https://github.com/beloglazov/zotero-scholar-citations) (2017) versions.
+Most of the code here is by [eschnett's](https://github.com/eschnett/) [zotero-citationcounts](https://github.com/eschnett/zotero-citationcounts) and some from various versions of `Zotero Scholar Citations`, from: [smlum's](https://github.com/smlum/zotero-scholar-citations) (2021 Feb), [MaxKuehn's](https://github.com/MaxKuehn/zotero-scholar-citations/) (2019), and [beloglazov's](https://github.com/beloglazov/zotero-scholar-citations) (2017) versions.
+I am a noob at github, so idk if this is proper etiquette. But Imma just make releases for personal use.
+
 ### About Add-on
 This is an add-on for [Zotero](https://www.zotero.org), a research source management tool. The add-on can auto-fetch citation counts for journal articles using various APIs, including [Crossref](https://www.crossref.org), [Inspire
 HEP](https://inspirehep.net),<!-- [NASA/ADS](https://ui.adsabs.harvard.edu), --> and [Semantic Scholar](https://www.semanticscholar.org).
