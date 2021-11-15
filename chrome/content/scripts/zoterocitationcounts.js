@@ -137,7 +137,14 @@ function setCitationCountSwitch(item, tag) {
   return count;
 }
 
-
+function doesFieldExist(item, idtype) {
+  const fieldContent = item.getField(idtype);
+  if (!fieldContent) {
+    return true
+  } else {
+    return false
+  }
+}
 
 function setCitationCount(item, tag, count) {
 
@@ -257,6 +264,7 @@ async function getInspireCount(item, idtype) {
 }
 
 async function getSemanticScholarCount(item, idtype) {
+    if (isDebug()) Zotero.debug("[scholar-citations]: idtype = "	+ idtype);
     let doi = null;
     if (idtype == 'doi') {
         doi = item.getField('DOI');
@@ -269,6 +277,33 @@ async function getSemanticScholarCount(item, idtype) {
             return -1;
         }
         doi = m[1];
+    } else if (idtype == 'url') {
+      if (isDebug()) Zotero.debug("[scholar-citations]: idtype == 'url' = "	+ (String(idtype) == 'url') + "   asdf");
+      let count = null
+      url1 = item.getField('url');
+      //const urlFieldID = Zotero.ItemFields.getID('url')
+      if (isDebug()) Zotero.debug("[scholar-citations]: URL = "	+ url1 );//+ "\n" + urlFieldID);
+
+      if (url1) {
+        //url1 = encodeURI(url1)
+        const url =
+              "https://api.semanticscholar.org/v1/paper/" + "URL:" + url1
+        if (isDebug()) Zotero.debug("[scholar-citations]: const url = "	+ url );
+        const response = await fetch(url)
+              .then(response => response.json())
+              .catch(err => null);
+        let count = null;
+        try {
+            count = response['citations'].length;
+            await await new Promise(r => setTimeout(r, 3000));
+            return count
+        } catch (err) {
+            // There are no citations
+            return -1;
+        }
+          return count;
+      }
+
     } else {
         // Internal error
         return -1;
@@ -508,6 +543,8 @@ Zotero.CitationCounts.updateSelectedItems = function(operation) {
 
 Zotero.CitationCounts.updateItems = function(items0, operation) {
     const items = items0.filter(item => !item.isFeedItem);
+    if (isDebug()) Zotero.debug("[scholar-citations]  items0: " + JSON.stringify(items0, null, 4));
+    if (isDebug()) Zotero.debug("[scholar-citations]  items: " + JSON.stringify(items, null, 4));
 
     if (items.length === 0 ||
         Zotero.CitationCounts.numberOfUpdatedItems <
@@ -591,6 +628,8 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
 
         const count_doi = await getSemanticScholarCount(item, 'doi');
         const count_arxiv = await getSemanticScholarCount(item, 'arxiv');
+        const count_url = await getSemanticScholarCount(item, 'url');
+        if (isDebug()) Zotero.debug("[scholar-citations]  sematnics " + count_doi + "doi"+ count_arxiv + "arxiv"+ count_url +"url");
         if (count_doi >= 0 || count_arxiv >= 0) {
             if (count_doi >= 0) {
                 setCitationCount(item, 'Semantic Scholar/DOI', count_doi);
@@ -600,6 +639,9 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
             }
             item.saveTx();
             Zotero.CitationCounts.counter++;
+        } else if (count_url >= 0){
+            setCitationCount(item, 'Semantic Scholar/url', count_url);
+            item.saveTx();
         }
         Zotero.CitationCounts.updateNextItem(operation);
 
