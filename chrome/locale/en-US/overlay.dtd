@@ -7,7 +7,7 @@
 <!ENTITY zotero.zoterocitationcounts.toolsmenu.label "Get citation counts for new items">
 
 <!--  Menu tools  -->
-<!ENTITY citationcounts-preferences-label "Citation Counts Manager Preferences…">
+<!ENTITY citationcounts-preferences-label "Citation Counts Preferences…">
 <!ENTITY citationcounts-autoretrieve-label "Get citation counts for new items">
 <!ENTITY citationcounts-autoretrieve-crossref-label "Crossref">
 <!ENTITY citationcounts-autoretrieve-inspire-label "Inspire HEP">

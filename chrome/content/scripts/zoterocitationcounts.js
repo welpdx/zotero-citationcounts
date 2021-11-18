@@ -4,8 +4,9 @@ if (typeof Zotero === 'undefined') {
 }
 Zotero.CitationCounts = {};
 
-// Stuff for Google Scholar. Collated from
+// ZSC is for Google Scholar to work. Collated from
 //https://github.com/smlum/zotero-scholar-citations/blob/develop/chrome/content/zsc.js
+
 let isDebug = function() {
     return typeof Zotero != 'undefined'
         && typeof Zotero.Debug != 'undefined'
@@ -66,16 +67,40 @@ zsc.getCiteCount = function(responseText) {
     }
 };
 
+// itemType that doesnt have call numbers
+zsc.itemtypeNoCallNum = "bill  blogPost  case  email  forumPost  hearing  instantMessage  patent  presentation  statute  webpage";
+
+// list of itemTypes from Zotero
+zsc.getitemtypes = function(item) {
+  var listOfTypes = [];
+  var itemtypes = Zotero.ItemTypes.getAll();
+  itemtypes.forEach(function (arrayItem) {
+      var x = arrayItem["name"];
+      listOfTypes.push(x);
+  });
+  return listOfTypes
+}
+// checks if itemTypeID is not in listOfTypes
+zsc.doesItemHaveCallNum = function (item, listOfTypes) {
+  const itemtypeid = item.getField("itemTypeID"); //or item.itemTypeID?
+  if(zsc.itemtypeNoCallNum.includes(listOfTypes[itemtypeid-1])){
+    return true
+  } else {
+    return false
+  }
+}
+
 // Definitions
 
 const operations = [
-    "crossref", "inspire", "ads", "semanticscholar", "googlescholar", "setcrossref", "setinspire", "setads", "setsemanticscholar"
+    "crossref", "inspire", "ads", "semanticscholar", "googlescholar",
+    "setcrossref", "setinspire", "setads", "setsemanticscholar"
 ];
 
 const operationNames = {
     "crossref": "Crossref",
     "inspire": "Inspire HEP",
-    //"ads": "NASA/ADS",
+    //"ads": "NASA/ADS", //remove completely? todo
     "semanticscholar": "Semantic Scholar",
   	"googlescholar": "Google Scholar",
     "setcrossref": "Crossref",
@@ -104,13 +129,11 @@ const operationNames = {
     return count;
 } */
 
-
+// Reorder existing cite count data to the top
 function setCitationCountSwitch(item, tag) {
-  //if (isDebug()) Zotero.debug("[scholar-citations] item: "+ item);
 
 	let extra = item.getField('extra');
   //if (isDebug()) Zotero.debug("[scholar-citations] extra: "  + extra);
-
   if (!extra) {
       extra = "";
       return -1;
@@ -123,31 +146,31 @@ function setCitationCountSwitch(item, tag) {
   line = extras.filter(ex => patt2.test(ex));
   countpatt = new RegExp("^\\d+");
   count = String(line).match(countpatt);
-  //if (isDebug()) Zotero.debug("[scholar-citations] rest: "  + rest);
-
+  count = parseInt(count);
   rest = String(rest).split(",").join("\n");
-  //if (isDebug()) Zotero.debug("[scholar-citations] rest2: "  + rest);
   extra = line + "\n" + rest;
-
   item.setField('extra', extra);
-  count = parseInt(count)
-  item.setField('callNumber', count);
 
-  //if (isDebug()) Zotero.debug("[scholar-citations] count: " + count);
+  //some itemTypes dont have callNumbers! This causes errors
+  if (!zsc.doesItemHaveCallNum(item, zsc.getitemtypes(item))) {
+      item.setField('callNumber', count);
+  }
+
   return count;
 }
 
+// function to reduce fetch requests by checking if field exists before
+//getxCount() is run, in updateItem()
 function doesFieldExist(item, idtype) {
   const fieldContent = item.getField(idtype);
   if (!fieldContent) {
-    return true
-  } else {
     return false
+  } else {
+    return true
   }
 }
 
 function setCitationCount(item, tag, count) {
-
 	let extra = item.getField('extra');
     if (!extra) {
         extra = "";
@@ -167,7 +190,11 @@ function setCitationCount(item, tag, count) {
     extras.unshift("" + count + " citations (" + tag + ") [" + date + "]");
     extra = extras.join("\n");
     item.setField('extra', extra);
-    item.setField('callNumber', count);
+
+    //some itemTypes dont have callNumbers! This causes errors
+    if(!zsc.doesItemHaveCallNum(item, zsc.getitemtypes(item))){
+        item.setField('callNumber', count);
+    }
 }
 
 async function getCrossrefCount(item) {
@@ -220,7 +247,7 @@ async function getCrossrefCount(item) {
 
 async function getInspireCount(item, idtype) {
     let doi = null;
-    if (idtype == 'doi') {
+    if (idtype == 'DOI') {
         doi = item.getField('DOI');
     } else if (idtype == 'arxiv') {
         const arxiv = item.getField('url'); // check URL for arXiv id
@@ -245,9 +272,11 @@ async function getInspireCount(item, idtype) {
     const response = await fetch(url)
           .then(response => response.json())
           .catch(err => null);
-
+    if (isDebug()) Zotero.debug("[scholar-citations]: inspire URL = "	+ url )
+    if (isDebug()) Zotero.debug("[scholar-citations]: inspire response = "	+ response )
     if (response === null) {
         // Something went wrong
+        if (isDebug()) Zotero.debug("[scholar-citations]: inspire response === null")
         return -1;
     }
 
@@ -256,6 +285,8 @@ async function getInspireCount(item, idtype) {
         str = response['metadata']['citation_count'];
     } catch (err) {
         // There are no citation counts
+        if (isDebug()) Zotero.debug("[scholar-citations]: inspire api: " +
+        response['message'] + "; Status: " + response['status'])
         return -1;
     }
 
@@ -263,10 +294,10 @@ async function getInspireCount(item, idtype) {
     return count;
 }
 
+
 async function getSemanticScholarCount(item, idtype) {
-    if (isDebug()) Zotero.debug("[scholar-citations]: idtype = "	+ idtype);
     let doi = null;
-    if (idtype == 'doi') {
+    if (idtype == 'DOI') {
         doi = item.getField('DOI');
     } else if (idtype == 'arxiv') {
         const arxiv = item.getField('url'); // check URL for arXiv id
@@ -278,53 +309,44 @@ async function getSemanticScholarCount(item, idtype) {
         }
         doi = m[1];
     } else if (idtype == 'url') {
-      if (isDebug()) Zotero.debug("[scholar-citations]: idtype == 'url' = "	+ (String(idtype) == 'url') + "   asdf");
       let count = null
       url1 = item.getField('url');
       //const urlFieldID = Zotero.ItemFields.getID('url')
-      if (isDebug()) Zotero.debug("[scholar-citations]: URL = "	+ url1 );//+ "\n" + urlFieldID);
-
-      if (url1) {
-        //url1 = encodeURI(url1)
-        const url =
-              "https://api.semanticscholar.org/v1/paper/" + "URL:" + url1
-        if (isDebug()) Zotero.debug("[scholar-citations]: const url = "	+ url );
-        const response = await fetch(url)
-              .then(response => response.json())
-              .catch(err => null);
-        let count = null;
-        try {
-            count = response['citations'].length;
-            await await new Promise(r => setTimeout(r, 3000));
-            return count
-        } catch (err) {
-            // There are no citations
-            return -1;
-        }
-          return count;
-      }
-
+      //if (isDebug()) Zotero.debug("[scholar-citations]: URL = "	+ url1 );//+ "\n" + urlFieldID);
     } else {
         // Internal error
         return -1;
     }
-    if (!doi) {
-        // There is no DOI / arXiv id; skip item
-        return -1;
+    var response;
+    if (doi) {
+      const edoi = encodeURIComponent(doi);
+      const url =
+            "https://api.semanticscholar.org/v1/paper/" +
+            (idtype == 'DOI' ? '' : 'arXiv:') + edoi
+      response = await fetch(url)
+            .then(response => response.json())
+            .catch(err => null);
+
+    } else if (url1) {
+      const url =
+            "https://api.semanticscholar.org/v1/paper/" + "URL:" + url1
+      if (isDebug()) Zotero.debug("[scholar-citations]: const url = "	+ url );
+      response = await fetch(url)
+            .then(response => response.json())
+            .catch(err => null);
+
+    } else{
+      return -1
     }
-    const edoi = encodeURIComponent(doi);
 
-    const url =
-          "https://api.semanticscholar.org/v1/paper/" +
-          (idtype == 'doi' ? '' : 'arXiv:') + edoi
-    const response = await fetch(url)
-          .then(response => response.json())
-          .catch(err => null);
-
-    if (response === null) {
+    if (response == null) {
         // Something went wrong
+        if (isDebug()) Zotero.debug("[scholar-citations] "
+          + "response === null in semantic");
         return -1;
     }
+
+    //if (isDebug()) Zotero.debug("[scholar-citations]: what is response ? "	+ JSON.stringify(response, null, 4) );
 
     let count = null;
     try {
@@ -358,7 +380,7 @@ async function getGoogleScholar(item) {
     if (response === null) {
         // Something went wrong
 		if (isDebug()) Zotero.debug("[scholar-citations] "
-			+ "Something went wrong");
+			+ "response === null in googlescholar");
         return -1;
 	}
 
@@ -366,11 +388,10 @@ async function getGoogleScholar(item) {
         // google Scholar returns
         count = zsc.getCiteCount(response);
 		if (isDebug()) Zotero.debug("[scholar-citations] "
-			+ "recieved non-captcha scholar results");
-		if (isDebug()) Zotero.debug("[scholar-citations] Count: "
-			+ count);
+			+ "recieved non-captcha scholar results. Count = " + count);
     } catch (err) {
         // There are no citations
+        // or captcha? todo
         return -1;
     }
 	return count;
@@ -407,7 +428,14 @@ Zotero.CitationCounts.notifierCallback = {
     notify: function(event, type, ids, extraData) {
         if (event == 'add') {
             const operation = getPref("autoretrieve");
-            Zotero.CitationCounts.updateItems(Zotero.Items.get(ids), operation);
+            // Make sure that if pref set to "no", script stops here
+            if (operation != "none" || operation === undefined || operation == null  ) {
+            //if (isDebug()) Zotero.debug("[scholar-citations]: running updateItems...... ");
+              Zotero.CitationCounts.updateItems(Zotero.Items.get(ids), operation);
+            } else {
+              //if (isDebug()) Zotero.debug("[scholar-citations]: NOOOOPE ");
+              return
+            }
         }
     }
 };
@@ -434,8 +462,8 @@ Zotero.CitationCounts.setCheck = function() {
     tools_ads.setAttribute("checked", Boolean(pref === "ads"));
     tools_semanticscholar.setAttribute(
         "checked", Boolean(pref === "semanticscholar"));
-	tools_googlescholar.setAttribute(
-		"checked", Boolean(pref === "googlescholar"));
+    tools_googlescholar.setAttribute(
+        "checked", Boolean(pref === "googlescholar"));
     tools_none.setAttribute("checked", Boolean(pref === "none"));
 };
 
@@ -542,9 +570,8 @@ Zotero.CitationCounts.updateSelectedItems = function(operation) {
 };
 
 Zotero.CitationCounts.updateItems = function(items0, operation) {
-    const items = items0.filter(item => !item.isFeedItem);
-    if (isDebug()) Zotero.debug("[scholar-citations]  items0: " + JSON.stringify(items0, null, 4));
-    if (isDebug()) Zotero.debug("[scholar-citations]  items: " + JSON.stringify(items, null, 4));
+    const items = items0.filter(item => !item.isFeedItem);;
+    //if (isDebug()) Zotero.debug("[scholar-citations]  items: " + JSON.stringify(items, null, 4));
 
     if (items.length === 0 ||
         Zotero.CitationCounts.numberOfUpdatedItems <
@@ -598,6 +625,16 @@ Zotero.CitationCounts.updateNextItem = function(operation) {
 };
 
 Zotero.CitationCounts.updateItem = async function(item, operation) {
+    // does these fields exist?
+    var doi_exists = false, url_exists = false, title_exists = false;
+    doi_exists = doesFieldExist(item, 'DOI')
+    url_exists = doesFieldExist(item, 'url')
+    title_exists = doesFieldExist(item, 'title')
+
+    if (isDebug()) Zotero.debug("[scholar-citations]  updateItem: "
+    + "doi_exists: " + doi_exists +"; url_exists: " + url_exists
+    + "; title_exists: " + title_exists + "| Operation: " + operation);
+
     if (operation == "crossref") {
 
         const count = await getCrossrefCount(item);
@@ -610,7 +647,7 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
 
     } else if (operation == "inspire") {
 
-        const count_doi = await getInspireCount(item, 'doi');
+        const count_doi = await getInspireCount(item, 'DOI');
         const count_arxiv = await getInspireCount(item, 'arxiv');
         if (count_doi >= 0 || count_arxiv >= 0) {
             if (count_doi >= 0) {
@@ -626,22 +663,29 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
 
     } else if (operation == "semanticscholar") {
 
-        const count_doi = await getSemanticScholarCount(item, 'doi');
-        const count_arxiv = await getSemanticScholarCount(item, 'arxiv');
-        const count_url = await getSemanticScholarCount(item, 'url');
-        if (isDebug()) Zotero.debug("[scholar-citations]  sematnics " + count_doi + "doi"+ count_arxiv + "arxiv"+ count_url +"url");
-        if (count_doi >= 0 || count_arxiv >= 0) {
-            if (count_doi >= 0) {
-                setCitationCount(item, 'Semantic Scholar/DOI', count_doi);
+
+        if (doi_exists){
+          const count_doi = await getSemanticScholarCount(item, 'DOI');
+          //if (isDebug()) Zotero.debug("[scholar-citations]  Semantics " + count_doi + " doi; ");
+          if (count_doi >= 0) {
+              setCitationCount(item, 'Semantic Scholar/DOI', count_doi);
+          }
+          item.saveTx();
+          Zotero.CitationCounts.counter++;
+        } else if (url_exists) {
+          const count_arxiv = await getSemanticScholarCount(item, 'arxiv');
+          if (count_arxiv >= 0) {
+              setCitationCount(item, 'Semantic Scholar/arXiv', count_arxiv);
+              //if (isDebug()) Zotero.debug("[scholar-citations]  Semantics " + count_arxiv + " arxiv; ");
+          } else {
+            const count_url = await getSemanticScholarCount(item, 'url');
+            if (count_url >= 0) {
+                setCitationCount(item, 'Semantic Scholar/URL', count_url);
+                //if (isDebug()) Zotero.debug("[scholar-citations]  Semantics " + count_url +" url; ");
             }
-            if (count_arxiv >= 0) {
-                setCitationCount(item, 'Semantic Scholar/arXiv', count_arxiv);
-            }
-            item.saveTx();
-            Zotero.CitationCounts.counter++;
-        } else if (count_url >= 0){
-            setCitationCount(item, 'Semantic Scholar/url', count_url);
-            item.saveTx();
+          }
+          item.saveTx();
+          Zotero.CitationCounts.counter++;
         }
         Zotero.CitationCounts.updateNextItem(operation);
 
@@ -656,38 +700,35 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
 
     } else if (operation == "setcrossref" ) {
 
-          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setcrossref'  ");
+          //if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setcrossref'  ");
           count = setCitationCountSwitch(item, 'Crossref');
 
-          //await item.save();
           if (count){
-            await item.saveTx();
+            await item.saveTx();//await item.save();
           }
           Zotero.CitationCounts.counter++;
           Zotero.CitationCounts.updateNextItem(operation);
 
     } else if (operation == "setinspire" ) {
 
-          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setinspire'  ");
+          //if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setinspire'  ");
           count = setCitationCountSwitch(item, 'Inspire/DOI');
           if (!count){
             count = setCitationCountSwitch(item, 'Inspire/arXiv');
           }
-          //await item.save();
           if (count){
-            await item.saveTx();
+            await item.saveTx();//await item.save();
           }
           Zotero.CitationCounts.counter++;
           Zotero.CitationCounts.updateNextItem(operation);
 
     } else if (operation == "setsemanticscholar" ) {
 
-          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setsemanticscholar'  ");
+          //if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setsemanticscholar'  ");
           count = setCitationCountSwitch(item, 'Semantic Scholar/DOI');
           if (!count){
             count = setCitationCountSwitch(item, 'Semantic Scholar/arXiv');
           }
-          //await item.save();
           if (count){
             await item.saveTx();
           }
@@ -696,10 +737,8 @@ Zotero.CitationCounts.updateItem = async function(item, operation) {
 
     } else if (operation == "setgooglescholar" ) {
 
-          if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setgooglescholar'  ");
+          //if (isDebug()) Zotero.debug("[scholar-citations] operation == 'setgooglescholar'  ");
           count = setCitationCountSwitch(item, 'Google Scholar');
-
-          //await item.save();
           if (count){
             await item.saveTx();
           }
