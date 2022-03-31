@@ -1,6 +1,8 @@
 # Zotero Citation Counts Manager (Frankenstein Edition)
 
 ## Changelogs
+#### 1.3.1  Update for Zotero 6.0
+ - Simply allowed plugin to work in Zotero V6.0. No additional code changes added
 #### 1.3.0  Big Boi Update
  - For Semantic Scholar Option, added a function to use semanticScholar url to get count. [eschnett/Issue#13](https://github.com/eschnett/zotero-citationcounts/issues/13)
  - Reduced unnessary fetch requests  (in `CitationCounts.updateItem()`)
